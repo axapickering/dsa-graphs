@@ -71,7 +71,7 @@ class Graph {
     _depthFirstSearch(start);
 
     return Array.from(seen)
-                .map(node => node.value);
+      .map(node => node.value);
   }
 
 
@@ -92,49 +92,42 @@ class Graph {
     }
 
     return Array.from(seen)
-                .map(node => node.value);
+      .map(node => node.value);
   }
 
 
   /** find the distance of the shortest path from the start node to the end node */
   distanceOfShortestPath(start, end) {
-      // BFS - each time we move a layer - increment a variable
-      // return Math.min()
+    // BFS - each time we move a layer - increment a variable
+    // return Math.min()
 
-    console.log("start: ",start.value," end: ",end.value);
+    console.log("start: ", start.value, " end: ", end.value);
 
     let seen = new Set();
-    const queue = [start];
-    let distances = [];
-    let distance = 0;
-    let neighborTracker = 0;
+    let queue = [start];
+    let distance = 1;
 
-    while (queue.length) {
+    while (queue.length > 0) {
       let current = queue.shift();
-      for (let neighbor of current.adjacent) {
-        if (!seen.has(neighbor)) neighborTracker++;
-      }
-      console.log("current node: ",current.value," dist: ",distance);
+
+      console.log("current node: ", current.value, " dist: ", distance);
 
       for (let neighbor of current.adjacent) {
-        if (neighborTracker > 0) {
-          neighborTracker--;
-        } else {
-          distance ++;
-        }
+        seen.add(neighbor);
         if (neighbor.value === end.value) {
-          distances.push(distance);
-        }
-        if (!seen.has(neighbor)) {
-          seen.add(neighbor);
-          queue.push(neighbor);
+          return distance;
         }
       }
-      distance++;
-    }
+      console.log("just added to seen, seen:", seen);
 
-      return Math.min(...distances);
-   }
+      for (let neighbor of current.adjacent) {
+        queue.push(neighbor);
+      }
+      if (!seen.has(current)) {
+        distance++;
+      }
+    }
+  }
 }
 
 
