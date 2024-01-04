@@ -20,6 +20,7 @@ class Graph {
     this.nodes.add(node);
   }
 
+
   /** add array of new Node instances and adds to them to nodes property. */
   addNodes(nodeArray) {
     for (let node of nodeArray) {
@@ -27,17 +28,20 @@ class Graph {
     }
   }
 
+
   /** add edge between nodes n1,n2 */
   addEdge(n1, n2) {
     n1.adjacent.add(n2);
     n2.adjacent.add(n1);
   }
 
+
   /** remove edge between nodes n1,n2 */
   removeEdge(n1, n2) {
     n1.adjacent.delete(n2);
     n2.adjacent.delete(n1);
   }
+
 
   /** remove node from graph:
    *
@@ -50,6 +54,7 @@ class Graph {
       this.removeEdge(node, otherNode);
     }
   }
+
 
   /** traverse graph with DFS and returns array of Node values */
   depthFirstSearch(start) {
@@ -65,11 +70,10 @@ class Graph {
     }
     _depthFirstSearch(start);
 
-    const vals = Array.from(seen);
-    const result = vals.map(node => node.value);
-
-    return result;
+    return Array.from(seen)
+                .map(node => node.value);
   }
+
 
   /** traverse graph with BDS and returns array of Node values */
   breadthFirstSearch(start) {
@@ -87,14 +91,51 @@ class Graph {
       }
     }
 
-    const vals = Array.from(seen);
-    const result = vals.map(node => node.value);
-    return result;
-
+    return Array.from(seen)
+                .map(node => node.value);
   }
 
+
   /** find the distance of the shortest path from the start node to the end node */
-  distanceOfShortestPath(start, end) { }
+  distanceOfShortestPath(start, end) {
+      // BFS - each time we move a layer - increment a variable
+      // return Math.min()
+
+    console.log("start: ",start.value," end: ",end.value);
+
+    let seen = new Set();
+    const queue = [start];
+    let distances = [];
+    let distance = 0;
+    let neighborTracker = 0;
+
+    while (queue.length) {
+      let current = queue.shift();
+      for (let neighbor of current.adjacent) {
+        if (!seen.has(neighbor)) neighborTracker++;
+      }
+      console.log("current node: ",current.value," dist: ",distance);
+
+      for (let neighbor of current.adjacent) {
+        if (neighborTracker > 0) {
+          neighborTracker--;
+        } else {
+          distance ++;
+        }
+        if (neighbor.value === end.value) {
+          distances.push(distance);
+        }
+        if (!seen.has(neighbor)) {
+          seen.add(neighbor);
+          queue.push(neighbor);
+        }
+      }
+      distance++;
+    }
+
+      return Math.min(...distances);
+   }
 }
+
 
 module.exports = { Graph, Node };
